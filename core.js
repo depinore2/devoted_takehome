@@ -14,12 +14,12 @@ function isValidIndex(indexName, callback) {
     }
 }
 function newLayer() {
-    const database = {};
+    const layer = {};
     for(let indexName of indexNames) {
-        database[indexName] = {};
+        layer[indexName] = {};
     }
 
-    return database;
+    return layer;
 }
 
 // finds the first transaction that has a value provided for this key, starting from the latest transaction and working backward.
