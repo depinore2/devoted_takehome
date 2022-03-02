@@ -1,0 +1,18 @@
+set a foo
+set b baz
+begin
+get a
+set a bar
+count bar
+begin
+count bar
+delete a
+get a
+count bar
+rollback
+get a
+count bar
+commit
+get a
+get b
+end
