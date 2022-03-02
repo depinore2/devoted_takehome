@@ -27,6 +27,12 @@ In order to get the COUNT and GET operations as speedy as possible, I decided to
 
 To keep the memory performance of transactions within reason, I implemented the transactions as a stack of layers, overlaid on top of the base state of the database.  Each layer only contained properties that overwrites a layer beneath it. In this way, I could avoid duplicating the whole database for each transaction.
 
+When reading uncommitted changes, I would read the state of the database and then apply the diff operations of each transactional layer starting from oldest and going to newest for that specific 'name'.  By the time the code has run through all transactions and has reached the last one, the "final uncommitted value" of that name is known.  
+
+This approach of layering commits is probably where the biggest performance drawback is: if we have a very large set of uncommitted transactions, there is a performance penalty for calculating the state of values.
+
+When committing all transactions, the layers are compacted onto the base layer of the database and discarded.
+
 ### Closing Thoughts ###
 
 I appreciate that this take-home assignment really gave me an opportunity to showcase my coding abilities.  Many other take-home assignments for DevOps positions are much more focused on infrastructure provisionment.  Overall, it was a nice change of pace.
