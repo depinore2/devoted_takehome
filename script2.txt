@@ -1,0 +1,7 @@
+set a foo
+set a foo
+count foo
+get a
+delete a
+get a
+count foo

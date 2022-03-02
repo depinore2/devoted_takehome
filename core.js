@@ -26,8 +26,9 @@ function newLayer() {
 function getIndexValue(db, indexName, key) {
     return isValidIndex(indexName, () => {
         const latestTransactionWithValue = db.transactions
+                                            .slice()
                                             .reverse()
-                                            .find(transaction => transaction[indexName][key] !== undefined);
+                                            .filter(transaction => transaction[indexName][key] !== undefined)[0];
         
         // if we find a transaction that contains this value, then return that.
         // otherwise, return the 'current' value from the base layer.

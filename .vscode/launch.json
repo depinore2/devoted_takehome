@@ -7,12 +7,32 @@
         {
             "type": "pwa-node",
             "request": "launch",
-            "name": "Launch Program",
+            "name": "debug script 1",
             "skipFiles": [
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}/index.js",
             "args": ["--file", "script1.txt"]
+        },
+        {
+            "type": "pwa-node",
+            "request": "launch",
+            "name": "debug script 2",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/index.js",
+            "args": ["--file", "script2.txt"]
+        },
+        {
+            "type": "pwa-node",
+            "request": "launch",
+            "name": "debug script 3",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/index.js",
+            "args": ["--file", "script3.txt"]
         }
     ]
 }
