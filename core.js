@@ -69,10 +69,19 @@ export function commitTransactions(db) {
 
 export function setValue(db, key, value) {
     const workingLayer = getWorkingLayer(db);
-    const currentCount = getIndexValue(db, 'counts', value);
+
+    const newValueCurrentCount = getIndexValue(db, 'counts', value) || 0;
+
+    const oldValue = getIndexValue(db, 'values', key);
     
     setIndexValue(workingLayer, 'values', key, value);
-    setIndexValue(workingLayer, 'counts', value, currentCount + 1);
+    setIndexValue(workingLayer, 'counts', value, newValueCurrentCount + 1);
+
+    // if we're changing the value of a pre-existing name in the database, we need to decrement the count of that old value.
+    if(oldValue !== undefined && oldValue !== null) {
+        const oldValueCount = getIndexValue(db, 'counts', oldValue) || 0;
+        setIndexValue(workingLayer, 'counts', oldValue, Math.max(oldValueCount - 1, 0));
+    }
 }
 export function deleteValue(db, key) {
     const currentValueAtKey = getIndexValue(db, 'values', key);
@@ -88,12 +97,66 @@ export function deleteValue(db, key) {
     }
 }
 export function getValue(db, key) {
-    return getIndex
+    return getIndexValue(db, 'values', key);
+}
+export function getCount(db, value) {
+    return getIndexValue(db, 'counts', value);
 }
 export function newInMemoryDatabase() {
     return {
         current: newLayer(),
         transactions: []
+    }
+}
+
+export function interpretLine(db, line) {
+    const [command, ...tokens] = line.split(' ');
+
+    switch(command.toUpperCase()) {
+        case 'SET':
+            return (() => {
+                const [name, value] = tokens;
+                setValue(db, name, value);
+            })();
+        case 'GET':
+            return (() => {
+                const [name] = tokens;
+                const value = getValue(db, name)
+                const returnValue = 
+                    value === undefined || value === null
+                    ? 'NULL'
+                    : value;
+
+                return returnValue;
+            })();
+        case 'DELETE':
+            return (() => {
+                const [name] = tokens;
+                deleteValue(db, name);
+            })();
+        case 'COUNT':
+            return (() => {
+                const [value] = tokens;
+                return getCount(db, value) || 0;
+            })();
+        case 'BEGIN':
+            return (() => {
+                newTransaction(db);
+            })();
+        case 'ROLLBACK':
+            return (() => {
+                rollbackTransaction(db);
+            })();
+        case 'COMMIT':
+            return (() => {
+                commitTransactions(db);
+            })();
+        case 'END':
+            return (() => {
+                process.exit();
+            })();
+        default:
+            return `Unrecognized command: [${command.toUpperCase()}] when reading line "${line}".`;
     }
 }
 // ======== /PUBLIC API ========

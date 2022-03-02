@@ -1,0 +1,12 @@
+get a
+set a foo
+set b foo
+count foo
+count bar
+delete a
+count foo
+set b baz
+count foo
+get b
+get B
+end
