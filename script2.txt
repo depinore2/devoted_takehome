@@ -5,3 +5,4 @@ get a
 delete a
 get a
 count foo
+END

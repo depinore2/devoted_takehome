@@ -154,7 +154,7 @@ export function interpretLine(db, line) {
             })();
         case 'END':
             return (() => {
-                process.exit();
+                return '<<EXIT>>'
             })();
         default:
             return `Unrecognized command: [${command.toUpperCase()}] when reading line "${line}".`;

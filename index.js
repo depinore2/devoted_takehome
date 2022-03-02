@@ -19,16 +19,17 @@ var rl = readline.createInterface({
     input: filePathIndex > -1 ? fs.createReadStream(process.argv[filePathIndex + 1]) : process.stdin,
     output: undefined
 });
-const stdin = process.stdin;
-
-stdin.setEncoding('utf8');
 
 rl.on('line', function (line) {
     const result = core.interpretLine(db, line);
     if(debug) {
         console.log(`>> ${line}`)
     }
-    if(result !== '' && result !== undefined) {
+
+    if(result === '<<EXIT>>') {
+        process.exit();
+    }
+    else if(result !== '' && result !== undefined) {
         console.log(result);
     }
     if(debug) {
@@ -36,7 +37,7 @@ rl.on('line', function (line) {
     }
 });
 
-rl.on('end', function () {
+rl.on('close', function () {
   process.exit();
 });
 
