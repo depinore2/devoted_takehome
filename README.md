@@ -25,9 +25,7 @@ The application is pretty straightforward, so it didn't require the use of any t
 ### Performance Considerations ###
 In order to get the COUNT and GET operations as speedy as possible, I decided to implement an index for both kinds of values: one index for each value in the db, and another index for the count of the values.  With this approach, performing lookups on values or counts have a constant-time performance of O(1).
 
-To keep the memory performance within reason, I implemented the transactions as a stack of layers, overlaid on top of the base state of the database.  In this way, I could avoid duplicating the whole database and instead have each transaction only contain differential changes to the base layer itself.  
-
-The memory footprint of this approach was O(N) where N is the unique properties being modified on top of the base layer--presumably a small subset of the overall database's total key set. This performance is much better than naively cloning the entire database for each transaction.
+To keep the memory performance of transactions within reason, I implemented the transactions as a stack of layers, overlaid on top of the base state of the database.  Each layer only contained properties that overwrites a layer beneath it. In this way, I could avoid duplicating the whole database for each transaction.
 
 ### Closing Thoughts ###
 
