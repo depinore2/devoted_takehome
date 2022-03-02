@@ -29,7 +29,7 @@ To keep the memory performance of transactions within reason, I implemented the 
 
 When reading uncommitted changes, I would read the state of the database and then apply the diff operations of each transactional layer starting from oldest and going to newest for that specific 'name'.  By the time the code has run through all transactions and has reached the last one, the "final uncommitted value" of that name is known.  
 
-This approach of layering commits is probably where the biggest performance drawback is: if we have a very large set of uncommitted transactions, there is a performance penalty for calculating the state of values.
+This approach of laying commits shows its weakness when fetching the uncommitted state of individual values: if we have a very large set of uncommitted transactions, there is a performance penalty for calculating the state of an individual value.
 
 When committing all transactions, the layers are compacted onto the base layer of the database and discarded.
 
